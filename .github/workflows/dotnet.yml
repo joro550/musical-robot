@@ -47,6 +47,7 @@ jobs:
         host: ${{secrets.HOST}}
         username: ${{secrets.USERNAME}}
         password: ${{ secrets.PASSWORD }}
+        port: 22
         script: |
             docker stop test
             docker pull registry.digitalocean.com/test-stuff/guitar-lessons:test
