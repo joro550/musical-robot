@@ -51,6 +51,7 @@ jobs:
         port: 22
         script: |
             docker stop thing
+            docker rm thing
             docker pull registry.digitalocean.com/test-stuff/guitar-lessons:test
             docker run -d -p 4000:80 --name thing registry.digitalocean.com/test-stuff/guitar-lessons:test
       
