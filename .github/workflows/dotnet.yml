@@ -45,12 +45,12 @@ jobs:
       uses: appleboy/ssh-action@master
       with:
         host: ${{secrets.HOST}}
-        username: ${{secrets.USERNAME}}
-        password: ${{ secrets.PASSWORD }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.SSH_KEY }}
         port: 22
         script: |
-            docker stop test
+            docker stop thing
             docker pull registry.digitalocean.com/test-stuff/guitar-lessons:test
-            docker run -d -p 8000:80 --name test registry.digitalocean.com/test-stuff/guitar-lessons:test
+            docker run -d -p 4000:80 --name thing registry.digitalocean.com/test-stuff/guitar-lessons:test
       
   
