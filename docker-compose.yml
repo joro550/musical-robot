@@ -1,0 +1,16 @@
+services:
+  web:
+    image: registry.digitalocean.com/test-stuff/guitar-lessons:test
+    restart: always
+    ports:
+      - "8000:5000"
+
+  data:
+    image: postgres:latest
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres123
+    volumes:
+      - db:/var/lib/postgresql/data
+
