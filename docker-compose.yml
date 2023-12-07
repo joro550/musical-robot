@@ -6,7 +6,8 @@ services:
     restart: always
     ports:
       - "8000:80"
-
+    depends_on:
+      - data
   data:
     build:
       dockerfile: ./data.dockerfile
