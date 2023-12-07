@@ -2,15 +2,20 @@ using api;
 using Dapper;
 using Npgsql;
 
-var connectionString = "User ID=postgres;Password=postgres123;Host=data;Port=5432;Database=musicalrobot;";
 using (var connection = new NpgsqlConnection("User ID=postgres;Password=postgres123;Host=data;Port=5432;"))
 {
     connection.Open();
-    connection.Execute(@"SELECT 'CREATE DATABASE musicalrobot'
-WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'musicalrobot')");
+
+    var databaseNames = await connection.QueryAsync<string>("SELECT datname From pg_database");
+    if (!databaseNames.Contains("musicalrobot"))
+    {
+        await connection.ExecuteAsync("CREATE DATABASE musicalrobot");
+
+    }
 }
 
 
+var connectionString = "User ID=postgres;Password=postgres123;Host=data;Port=5432;Database=musicalrobot;";
 Migrator.Migrate(connectionString);
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,6 +27,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<ConnectionString>(_ => new ConnectionString(connectionString));
+builder.Services.AddSingleton<IRepository, Repository>();
 
 var app = builder.Build();
 

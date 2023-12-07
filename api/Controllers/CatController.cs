@@ -8,45 +8,39 @@ namespace api.Controllers;
 [Route("[controller]")]
 public class CatController : ControllerBase
 {
-    private static readonly string[] Summaries = new[]
-    {
-        "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-    };
-
     private readonly ILogger<WeatherForecastController> _logger;
-    private readonly ConnectionString connectionString;
+    private readonly IRepository _repository;
 
-    public CatController(ILogger<WeatherForecastController> logger, ConnectionString connectionString)
+    public CatController(ILogger<WeatherForecastController> logger, IRepository repository)
     {
         _logger = logger;
-        this.connectionString = connectionString;
+        _repository = repository;
     }
 
     [HttpGet()]
     public async Task<List<Cat>> Get()
     {
-        using var connection = new NpgsqlConnection(connectionString.Value);
-        await connection.OpenAsync();
+        var cats = await _repository.WithConnection(async (con) =>
+        {
+            return await con.QueryAsync<Cat>("SELECT * FROM cat");
+        });
 
-        var cats = await connection.QueryAsync<Cat>("SELECT * FROM \"Cat\"");
         return cats.ToList();
     }
 
     [HttpPost]
     public async Task<List<Cat>> Create(CatRequest request)
     {
-        using var connection = new NpgsqlConnection(connectionString.Value);
-        await connection.OpenAsync();
-
-        var queryArgs = new
+        await _repository.WithConnection(async (con) =>
         {
-            name = request.Name
-        };
+            await con.ExecuteAsync("INSERT INTO cat (name) VALUES (@name)", new
+            {
+                name = request.Name
+            });
+        });
 
-        await connection.ExecuteAsync("INSERT INTO \"Cat\" (\"Name\") VALUES (@name)", queryArgs);
         return await Get();
     }
-
 }
 
 public class Cat

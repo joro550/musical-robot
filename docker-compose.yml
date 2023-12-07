@@ -9,8 +9,7 @@ services:
     depends_on:
       - data
   data:
-    build:
-      dockerfile: ./data.dockerfile
+    image: postgres:latest
     restart: always
     environment:
       - POSTGRES_USER=postgres

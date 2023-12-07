@@ -8,13 +8,13 @@ public class AddCatTable : Migration
 {
     public override void Up()
     {
-        Create.Table("Cat")
-            .WithColumn("Id").AsInt64().PrimaryKey().Identity()
-            .WithColumn("Name").AsString();
+        Create.Table("cat")
+            .WithColumn("id").AsInt64().PrimaryKey().Identity()
+            .WithColumn("name").AsString();
     }
 
     public override void Down()
     {
-        Delete.Table("Cat");
+        Delete.Table("cat");
     }
 }
