@@ -1,19 +1,19 @@
 services:
   web:
     image: registry.digitalocean.com/test-stuff/guitar-lessons:test
+    build:
+      dockerfile: ./Dockerfile
     restart: always
     ports:
-      - "8000:5000"
+      - "8000:80"
 
   data:
-    image: postgres:latest
+    build:
+      dockerfile: ./data.dockerfile
     restart: always
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres123
     volumes:
-      - db:/var/lib/postgresql/data
-volumes:
-  db:
-    driver: local
+      - ./dataset:/docker-entrypoint-initdb.d/
 
